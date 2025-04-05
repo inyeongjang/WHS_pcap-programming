@@ -90,42 +90,16 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header,
       int payload_len = ip_total_len - ip_header_len - tcp_header_len; 
       if (payload_len>0) {
         const u_char * payload = (u_char *) tcp + tcp_header_len; 
-
-        int header_end = -1;
-        for (int i = 0; i < payload_len; i++) {
-            if (payload[i] == '\r' && payload[i+1] == '\n' &&
-                payload[i+2] == '\r' && payload[i+3] == '\n') {
-                header_end = i + 4; 
-                break;
-            }
-        }
-
-      if (header_end > 0) {
-          printf("--- HTTP Headers ---\n");
-          for (int i = 0; i < header_end; i++) {
-              if (isprint(payload[i]) || payload[i] == '\r' || payload[i] == '\n')
-                  printf("%c", payload[i]);
-              else
-                  printf(".");
+        printf("Message (%d bytes):\n", payload_len); 
+        int print_len = payload_len > 100 ? 100 : payload_len; 
+        printf(" "); 
+        for(int i=0; i<print_len; i++) {
+          if(isprint(payload[i]))
+            printf("%c", payload[i]); 
+          else
+            printf("."); 
           }
           printf("\n");
-
-          printf("--- HTTP Body ---\n");
-          for (int i = header_end; i < payload_len; i++) {
-              if (isprint(payload[i]))
-                  printf("%c", payload[i]);
-              else
-                  printf(".");
-          }
-      } else {
-          for (int i = 0; i < payload_len; i++) {
-              if (isprint(payload[i]))
-                  printf("%c", payload[i]);
-              else
-                  printf(".");
-          }
-      }
-      printf("\n");
         }
       }
     }
