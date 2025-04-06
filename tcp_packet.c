@@ -91,9 +91,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header,
       if (payload_len>0) {
         const u_char * payload = (u_char *) tcp + tcp_header_len; 
         printf("Message (%d bytes):\n", payload_len); 
-        int print_len = payload_len > 100 ? 100 : payload_len; 
-        printf(" "); 
-        for(int i=0; i<print_len; i++) {
+        for(int i=0; i<payload_len; i++) {
           if(isprint(payload[i]))
             printf("%c", payload[i]); 
           else
